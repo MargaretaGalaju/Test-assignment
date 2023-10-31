@@ -1,0 +1,61 @@
+:host {
+  position: relative;
+}
+
+.movies {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 100px;
+
+  &__search {
+    width: 90%;
+    border: 1px solid #dedede;
+    display: flex;
+    align-self: center;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    
+    input {
+      display: flex;
+      align-items: center;
+      padding: 14px 20px;
+      font-size: 1rem;
+      border: none;
+      outline: none;
+      height: 100%;
+      flex: 1;
+    }
+  }
+
+  &__list {
+    display: flex;
+    flex-flow: wrap;
+    justify-content: center;
+
+    app-movie-card {
+      margin: 5px;
+      width: 200px;
+      align-items: stretch
+    }
+  }
+}
+
+.loader {
+  position: absolute;
+  background-color: rgb(255 255 255 / 25%);
+  width: 100vw;
+  min-height: 100vh;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  top: 0;
+  justify-content: center;
+}
+
+@media screen and (max-width: 720px) {
+  .movies {
+    padding: 20px;
+  }
+}

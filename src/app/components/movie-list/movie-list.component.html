@@ -1,1 +1,41 @@
-<p>movie-list works!</p>
+<section class="movies">
+  <h1>Trending movies</h1>
+
+  <div class="movies__search">
+    <input
+      type="text"
+      pInputText
+      placeholder="Search..."
+      (input)="onSearchTyping($event)"
+    />
+  </div>
+
+  <div class="movies__list">
+    <ng-container *ngIf="movies$ | async as movies">
+      <ng-container *ngIf="movies?.length; else noResults">
+        <app-movie-card
+          *ngFor="let movie of movies"
+          [movie]="movie"
+        ></app-movie-card>
+      </ng-container>
+
+      <ng-template #noResults>
+        No results
+      </ng-template>
+    </ng-container>
+  </div>
+
+  <p-paginator
+    *ngIf="paginator$ | async as paginator"
+    [rows]="paginator.rows"
+    [totalRecords]="paginator.totalRecords"
+    (onPageChange)="onPageChange($event.page)"
+  ></p-paginator>
+</section>
+
+<div *ngIf="loading$ | async" class="loader">
+  <p-progressSpinner
+    strokeWidth="5"
+    fill="var(--surface-ground)"
+  ></p-progressSpinner>
+</div>

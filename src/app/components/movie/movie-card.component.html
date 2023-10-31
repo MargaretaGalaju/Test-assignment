@@ -1,0 +1,29 @@
+<div class="movie">
+  <div class="movie__poster">
+    <img
+      class="movie__poster-img"
+      alt="movie"
+      width="180px"
+      height="260px"
+      [src]="
+        movie.poster_path
+          ? 'https://image.tmdb.org/t/p/w500/' + movie.poster_path
+          : '/assets/noimage.jpg'
+      "
+    />
+  </div>
+
+  <div class="movie__info">
+    <div class="movie__title">
+      {{ movie.title }}
+    </div>
+
+    <div class="movie__overview" [attr.title]="movie.overview">
+      {{ movie.overview }}
+    </div>
+
+    <div class="movie__overview read-more">
+      <a [routerLink]="movie.id">Read more</a>
+    </div>
+  </div>
+</div>
