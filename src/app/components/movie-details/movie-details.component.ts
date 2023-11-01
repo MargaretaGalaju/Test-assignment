@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, first, map, switchMap, tap } from 'rxjs';
+import { Observable, first, map, switchMap } from 'rxjs';
 
 import { DetailedMovie } from '../../interfaces/movie.interface';
-import { MovieService } from '../../services/movie.service';
+import { MovieApiService } from '../../services/movie-api.service';
 
 @Component({
   selector: 'app-movie-details',
@@ -14,12 +14,12 @@ export class MovieDetailsComponent {
   public movie$: Observable<DetailedMovie>;
 
   constructor(
-    private movieService: MovieService,
+    private apiService: MovieApiService,
     private activatedRoute: ActivatedRoute
   ) {
     this.movie$ = this.activatedRoute.params.pipe(
       first(),
-      switchMap((params) => this.movieService.fetchMovie(params['id'])),
+      switchMap((params) => this.apiService.fetchMovie(params['id'])),
       map((movie) => ({
         ...movie,
         genresList: movie.genres.map((genre) => genre.name).join(', '),

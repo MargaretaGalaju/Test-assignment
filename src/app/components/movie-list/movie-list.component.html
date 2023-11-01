@@ -3,6 +3,7 @@
 
   <div class="movies__search">
     <input
+      [ngModel]="searchValue$ | async"
       type="text"
       pInputText
       placeholder="Search..."
@@ -11,7 +12,7 @@
   </div>
 
   <div class="movies__list">
-    <ng-container *ngIf="movies$ | async as movies">
+    <ng-container *ngIf="movieService.movies$ | async as movies">
       <ng-container *ngIf="movies?.length; else noResults">
         <app-movie-card
           *ngFor="let movie of movies"
@@ -26,14 +27,14 @@
   </div>
 
   <p-paginator
-    *ngIf="paginator"
-    [rows]="paginator.rows"
-    [totalRecords]="paginator.totalRecords"
-    (onPageChange)="onPageChange($event.page)"
+    [rows]="movieService.paginator.rows"
+    [first]="movieService.paginator.first"
+    [totalRecords]="movieService.paginator.totalRecords"
+    (onPageChange)="onPageChange($event.page || 1)"
   ></p-paginator>
 </section>
 
-<div *ngIf="loading$ | async" class="loader">
+<div *ngIf="movieService.loading$ | async" class="loader">
   <p-progressSpinner
     strokeWidth="5"
     fill="var(--surface-ground)"
