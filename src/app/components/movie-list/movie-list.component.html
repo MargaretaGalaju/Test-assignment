@@ -26,7 +26,7 @@
   </div>
 
   <p-paginator
-    *ngIf="paginator$ | async as paginator"
+    *ngIf="paginator"
     [rows]="paginator.rows"
     [totalRecords]="paginator.totalRecords"
     (onPageChange)="onPageChange($event.page)"

@@ -1,6 +1,5 @@
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   OnDestroy,
   OnInit,
@@ -18,9 +17,10 @@ import {
   switchMap,
   takeUntil,
 } from 'rxjs';
-import { Movie } from 'src/app/interfaces/movie.interface';
-import { Paginator } from 'src/app/interfaces/paginator.interface';
-import { MovieService } from 'src/app/services/movie.service';
+
+import { Movie } from '../../interfaces/movie.interface';
+import { MovieService } from '../../services/movie.service';
+import { Paginator } from '../..//interfaces/paginator.interface';
 
 @Component({
   selector: 'app-movie-list',
@@ -30,13 +30,13 @@ import { MovieService } from 'src/app/services/movie.service';
 })
 export class MovieListComponent implements OnInit, OnDestroy {
   public movies$: Observable<Movie[]> = new Observable();
-  public loading$: Subject<boolean> = new Subject();
+  public loading$: BehaviorSubject<boolean> = new BehaviorSubject(true);
 
-  public paginator$: BehaviorSubject<Paginator> = new BehaviorSubject({
+  public paginator: Paginator = {
     rows: 0,
     totalRecords: 0,
     currentPage: 0,
-  });
+  };
 
   private searchValue$: Subject<string> = new Subject();
   private destroy$: Subject<boolean> = new Subject();
@@ -49,7 +49,6 @@ export class MovieListComponent implements OnInit, OnDestroy {
     private movieService: MovieService,
     private messageService: MessageService,
   ) {
-    this.loading$.next(true);
     this.handleSearch();
   }
 
@@ -61,14 +60,17 @@ export class MovieListComponent implements OnInit, OnDestroy {
           : this.movieService.fetchMovieList(page)
       ),
       map((data) => {
-        this.paginator$.next({
-          ...this.paginator$.getValue(),
+        this.paginator = {
+          ...this.paginator,
           rows: data?.results?.length,
           // Correct would be:
           // totalRecords: data.total_pages,
           // But the API has a limit set of 500 pages (access the first 500 pages only), data?.results?.length are items per page
-          totalRecords: data.total_results/data?.results?.length > 500 ? data?.results?.length*500 : data.total_results,
-        });
+          totalRecords:
+            data.total_pages > 500
+              ? data?.results?.length * 500
+              : data.total_results,
+        };
 
         this.loading$.next(false);
         return data.results;
@@ -79,6 +81,8 @@ export class MovieListComponent implements OnInit, OnDestroy {
           summary: 'Something went wrong',
           detail: 'An error occured',
         });
+
+        this.loading$.next(false);
 
         return of([]);
       })
@@ -93,14 +97,14 @@ export class MovieListComponent implements OnInit, OnDestroy {
   public onPageChange(page?: number): void {
     this.loading$.next(true);
 
-    this.paginator$.next({
-      ...this.paginator$.getValue(),
+    this.paginator = {
+      ...this.paginator,
       currentPage: (page ?? 0) + 1,
-    });
+    };
 
     this.movieOptions$.next({
       ...this.movieOptions$.getValue(),
-      page: this.paginator$.getValue().currentPage,
+      page: this.paginator.currentPage,
     });
   }
 
@@ -116,13 +120,13 @@ export class MovieListComponent implements OnInit, OnDestroy {
       .pipe(debounceTime(400), distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe((searchValue) => {
         this.loading$.next(true);
-        this.paginator$.next({
-          ...this.paginator$.getValue(),
+        this.paginator = {
+          ...this.paginator,
           currentPage: 1,
-        });
+        };
 
         this.movieOptions$.next({
-          page: this.paginator$.getValue().currentPage,
+          page: this.paginator.currentPage,
           search: searchValue,
         });
       });

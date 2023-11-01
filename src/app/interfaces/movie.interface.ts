@@ -25,7 +25,7 @@ export interface Movie {
 
 
 export interface DetailedMovie extends Movie {
-  belongs_to_collection: any; // You can define a more specific type if needed
+  belongs_to_collection: any;
   budget: number;
   genres: Genre[];
   homepage: string;

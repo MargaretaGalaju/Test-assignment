@@ -1,6 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+
 import { DetailedMovie, MoviesHttpResponse } from '../interfaces/movie.interface';
 
 
@@ -8,6 +9,8 @@ import { DetailedMovie, MoviesHttpResponse } from '../interfaces/movie.interface
   providedIn: 'root',
 })
 export class MovieService {
+  private static baseUrl = 'https://api.themoviedb.org/3'
+  
   constructor(private readonly httpClient: HttpClient) {}
 
   public searchByKeyword(
@@ -15,30 +18,28 @@ export class MovieService {
     search: string
   ): Observable<MoviesHttpResponse> {
     let params = new HttpParams()
-      .set('language', 'en-US')
       .set('page', page.toString())
       .set('query', search);
 
     return this.httpClient.get<MoviesHttpResponse>(
-      'https://api.themoviedb.org/3/search/movie',
+      `${MovieService.baseUrl}/search/movie`,
       { params }
     )
   }
 
   public fetchMovieList(page: number): Observable<MoviesHttpResponse> {
     let params = new HttpParams()
-      .set('language', 'en-US')
       .set('page', page.toString());
 
     return this.httpClient.get<MoviesHttpResponse>(
-      'https://api.themoviedb.org/3/movie/popular',
+      `${MovieService.baseUrl}/movie/popular`,
       { params }
     );
   }
 
   public fetchMovie(id: string): Observable<DetailedMovie> {
     return this.httpClient.get<DetailedMovie>(
-      `https://api.themoviedb.org/3/movie/${id}`
+      `${MovieService.baseUrl}/movie/${id}`
     );
   }
 }

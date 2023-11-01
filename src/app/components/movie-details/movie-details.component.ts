@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Subject, first, map, switchMap, tap } from 'rxjs';
-import { DetailedMovie, Movie } from 'src/app/interfaces/movie.interface';
-import { MovieService } from 'src/app/services/movie.service';
+import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Observable, first, map, switchMap, tap } from 'rxjs';
+
+import { DetailedMovie } from '../../interfaces/movie.interface';
+import { MovieService } from '../../services/movie.service';
 
 @Component({
   selector: 'app-movie-details',
@@ -11,10 +12,6 @@ import { MovieService } from 'src/app/services/movie.service';
 })
 export class MovieDetailsComponent {
   public movie$: Observable<DetailedMovie>;
-  public movieConfig: {
-    title: string;
-    key: string;
-  }[] = [];
 
   constructor(
     private movieService: MovieService,
