@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Observable, first, map, switchMap } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Observable, catchError, first, map, of, switchMap } from 'rxjs';
 
 import { DetailedMovie } from '../../interfaces/movie.interface';
 import { MovieApiService } from '../../services/movie-api.service';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-movie-details',
@@ -15,7 +16,9 @@ export class MovieDetailsComponent {
 
   constructor(
     private apiService: MovieApiService,
-    private activatedRoute: ActivatedRoute
+    private messageService: MessageService,
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
   ) {
     this.movie$ = this.activatedRoute.params.pipe(
       first(),
@@ -24,6 +27,16 @@ export class MovieDetailsComponent {
         ...movie,
         genresList: movie.genres.map((genre) => genre.name).join(', '),
       })),
+      catchError(() => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Invalid movie id',
+          detail: 'Movie with such an id doesn\'t exist',
+        });
+        this.router.navigate(['']);
+
+        return of();
+      }),
     );
   }
 }

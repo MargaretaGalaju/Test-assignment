@@ -1,6 +1,6 @@
 <a class="back-to-overview" [routerLink]="''">← Back to overview</a>
 
-<div *ngIf="movie$ | async as movie">
+<ng-container *ngIf="movie$ | async as movie">
   <div
     class="backdrop"
     [style.background-image]="
@@ -14,8 +14,8 @@
     <div class="movie-details__poster">
       <img
         alt="movie"
-        width="360px"
-        height="520px"
+        width="320px"
+        height="480px"
         [src]="
           movie.poster_path
             ? 'https://image.tmdb.org/t/p/w500/' + movie.poster_path
@@ -35,10 +35,10 @@
       <p><strong>IMDb ID:</strong> {{ movie.imdb_id }}</p>
       <p><strong>Original Language:</strong> {{ movie.original_language }}</p>
       <p><strong>Status:</strong> {{ movie.status }}</p>
-      <p>
+      <p *ngIf="movie.homepage">
         <strong>Homepage: </strong>
         <a [href]="movie.homepage" target="_blank">{{ movie.homepage }}</a>
       </p>
     </div>
   </div>
-</div>
+</ng-container>
